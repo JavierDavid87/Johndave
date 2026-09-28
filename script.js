@@ -1,90 +1,85 @@
-/* =========================================================
-   PORTFOLIO JAVASCRIPT
-========================================================= */
+```javascript
+const categories = document.querySelectorAll(".category");
+
+let currentCategory = "quiz";
+
+const categoryNames = {
+    quiz: "Quiz",
+    longquiz: "Long Quiz",
+    midterms: "Midterms",
+    finals: "Finals",
+    activities: "Activities",
+    projects: "Projects"
+};
 
 
-/* =========================================================
+/* =========================
    MOBILE MENU
-========================================================= */
+========================= */
 
-const menuBtn = document.getElementById("menuBtn");
+function toggleMenu() {
 
-const navMenu = document.getElementById("navMenu");
+    document
+        .getElementById("nav")
+        .classList.toggle("show");
 
-
-menuBtn.addEventListener("click", () => {
-
-    navMenu.classList.toggle("show");
-
-});
+}
 
 
-/* =========================================================
+/* =========================
    TYPING ANIMATION
-========================================================= */
+========================= */
 
-const typingText = document.getElementById("typingText");
+const typing =
+    document.getElementById("typing");
 
-const textList = [
-
+const texts = [
     "Computer Science Student",
-
     "Future Software Developer",
-
     "Web Developer",
-
-    "Programming Learner",
-
-    "Technology Enthusiast"
-
+    "Programming Learner"
 ];
 
-
-let textIndex = 0;
-
-let characterIndex = 0;
-
+let textNumber = 0;
+let letterNumber = 0;
 let deleting = false;
 
 
-function typingAnimation() {
+function typeText() {
 
-    const currentText = textList[textIndex];
+    const text = texts[textNumber];
 
     if (!deleting) {
 
-        typingText.textContent =
-            currentText.substring(0, characterIndex + 1);
+        typing.textContent =
+            text.substring(0, letterNumber + 1);
 
-        characterIndex++;
+        letterNumber++;
 
-        if (characterIndex === currentText.length) {
+        if (letterNumber === text.length) {
 
             deleting = true;
 
-            setTimeout(typingAnimation, 1800);
+            setTimeout(typeText, 1500);
 
             return;
-
         }
 
     } else {
 
-        typingText.textContent =
-            currentText.substring(0, characterIndex - 1);
+        typing.textContent =
+            text.substring(0, letterNumber - 1);
 
-        characterIndex--;
+        letterNumber--;
 
-        if (characterIndex === 0) {
+        if (letterNumber === 0) {
 
             deleting = false;
 
-            textIndex++;
+            textNumber++;
 
-            if (textIndex >= textList.length) {
-
-                textIndex = 0;
-
+            if (textNumber >= texts.length) {
+                textNumber = 0;
             }
 
         }
@@ -92,109 +87,26 @@ function typingAnimation() {
     }
 
     setTimeout(
-        typingAnimation,
-        deleting ? 50 : 100
+        typeText,
+        deleting ? 45 : 90
     );
 
 }
 
-
-typingAnimation();
-
-
-/* =========================================================
-   PROFILE PICTURE
-========================================================= */
-
-const profileUpload =
-    document.getElementById("profileUpload");
-
-const profileImage =
-    document.getElementById("profileImage");
+typeText();
 
 
-profileUpload.addEventListener("change", function () {
+/* =========================
+   CATEGORY
+========================= */
 
-    const file = this.files[0];
-
-    if (!file) return;
-
-    if (!file.type.startsWith("image/")) {
-
-        alert("Please select an image.");
-
-        return;
-
-    }
-
-    const reader = new FileReader();
-
-    reader.onload = function (event) {
-
-        profileImage.src = event.target.result;
-
-        localStorage.setItem(
-            "profileImage",
-            event.target.result
-        );
-
-    };
-
-    reader.readAsDataURL(file);
-
-});
-
-
-/* LOAD SAVED PROFILE */
-
-const savedProfile =
-    localStorage.getItem("profileImage");
-
-
-if (savedProfile) {
-
-    profileImage.src = savedProfile;
-
-}
-
-
-/* =========================================================
-   CATEGORIES
-========================================================= */
-
-let currentCategory = "quiz";
-
-
-const categoryNames = {
-
-    quiz: "Quiz",
-
-    longquiz: "Long Quiz",
-
-    midterms: "Midterms",
-
-    finals: "Finals",
-
-    activities: "Activities",
-
-    projects: "Projects"
-
-};
-
-
-const categoryButtons =
-    document.querySelectorAll(".category-btn");
-
-
-categoryButtons.forEach(button => {
+categories.forEach(button => {
 
     button.addEventListener("click", () => {
 
-        categoryButtons.forEach(btn => {
-
-            btn.classList.remove("active");
-
-        });
+        categories.forEach(item =>
+            item.classList.remove("active")
+        );
 
         button.classList.add("active");
 
@@ -202,44 +114,38 @@ categoryButtons.forEach(button => {
             button.dataset.category;
 
         document.getElementById(
-            "currentCategory"
+            "categoryTitle"
         ).textContent =
             categoryNames[currentCategory];
 
-        loadFiles();
+        loadPublicFiles();
 
     });
 
 });
 
 
-/* =========================================================
-   FILE UPLOAD
-========================================================= */
+/* =========================
+   LOAD PUBLIC FILES
+========================= */
 
-const fileUpload =
-    document.getElementById("fileUpload");
+async function loadPublicFiles() {
+
+    const grid =
+        document.getElementById("fileGrid");
+
+    grid.innerHTML =
+        `<div class="loading">
+            Loading files...
+        </div>`;
 
 
-fileUpload.addEventListener("change", async function () {
+    if (!window.portfolioDB) {
 
-    const files = Array.from(this.files);
-
-    if (files.length === 0) return;
-
-
-    /*
-    Check Firebase
-    */
-
-    if (
-        !window.firebaseStorage ||
-        !window.firebaseDB
-    ) {
-
-        alert(
-            "Firebase is not configured yet. Add your Firebase configuration in index.html."
-        );
+        grid.innerHTML =
+            `<div class="empty">
+                Firebase is not configured.
+            </div>`;
 
         return;
 
@@ -248,178 +154,34 @@ fileUpload.addEventListener("change", async function () {
 
     const {
         collection,
-        addDoc,
-        ref,
-        uploadBytes,
-        getDownloadURL
-    } = window.firebaseFunctions;
+        getDocs
+    } = window.firestoreFunctions;
 
 
     try {
 
-        for (const file of files) {
-
-            const safeName =
-                Date.now() +
-                "_" +
-                file.name.replace(
-                    /[^a-zA-Z0-9._-]/g,
-                    "_"
-                );
-
-
-            const storageRef = ref(
-
-                window.firebaseStorage,
-
-                `portfolio/${currentCategory}/${safeName}`
-
-            );
-
-
-            /* Upload */
-
-            const snapshot =
-                await uploadBytes(
-                    storageRef,
-                    file
-                );
-
-
-            /* Get public URL */
-
-            const downloadURL =
-                await getDownloadURL(
-                    snapshot.ref
-                );
-
-
-            /* Save metadata */
-
-            await addDoc(
-
-                collection(
-                    window.firebaseDB,
-                    "portfolioFiles"
-                ),
-
-                {
-
-                    name: file.name,
-
-                    category: currentCategory,
-
-                    type: file.type,
-
-                    size: file.size,
-
-                    url: downloadURL,
-
-                    createdAt: Date.now()
-
-                }
-
-            );
-
-        }
-
-
-        alert(
-            `${files.length} file(s) uploaded successfully!`
-        );
-
-
-        this.value = "";
-
-        loadFiles();
-
-
-    } catch (error) {
-
-        console.error(error);
-
-        alert(
-            "Upload failed. Check your Firebase configuration and Storage rules."
-        );
-
-    }
-
-});
-
-
-/* =========================================================
-   LOAD FILES
-========================================================= */
-
-async function loadFiles() {
-
-    const fileGrid =
-        document.getElementById("fileGrid");
-
-
-    fileGrid.innerHTML = `
-        <div class="empty">
-            Loading files...
-        </div>
-    `;
-
-
-    if (
-        !window.firebaseDB ||
-        !window.firebaseFunctions
-    ) {
-
-        fileGrid.innerHTML = `
-            <div class="empty">
-                Firebase has not been configured yet.
-            </div>
-        `;
-
-        updateCounters([]);
-
-        return;
-
-    }
-
-
-    try {
-
-        const {
-            collection,
-            getDocs
-        } = window.firebaseFunctions;
-
-
-        const querySnapshot =
+        const snapshot =
             await getDocs(
-
                 collection(
-                    window.firebaseDB,
+                    window.portfolioDB,
                     "portfolioFiles"
                 )
-
             );
 
 
-        let files = [];
+        const files = [];
 
 
-        querySnapshot.forEach(doc => {
+        snapshot.forEach(document => {
 
-            const data = doc.data();
-
+            const data =
+                document.data();
 
             if (
                 data.category === currentCategory
             ) {
 
-                files.push({
-
-                    id: doc.id,
-
-                    ...data
-
-                });
+                files.push(data);
 
             }
 
@@ -427,7 +189,7 @@ async function loadFiles() {
 
 
         files.sort(
-            (a, b) =>
+            (a,b) =>
                 (b.createdAt || 0) -
                 (a.createdAt || 0)
         );
@@ -436,48 +198,45 @@ async function loadFiles() {
         displayFiles(files);
 
 
-    } catch (error) {
+    } catch(error) {
 
         console.error(error);
 
-
-        fileGrid.innerHTML = `
-            <div class="empty">
+        grid.innerHTML =
+            `<div class="empty">
                 Unable to load files.
-            </div>
-        `;
+            </div>`;
 
     }
 
 }
 
 
-/* =========================================================
-   DISPLAY FILES
-========================================================= */
+/* =========================
+   DISPLAY
+========================= */
 
 function displayFiles(files) {
 
-    const fileGrid =
+    const grid =
         document.getElementById("fileGrid");
 
 
-    fileGrid.innerHTML = "";
+    grid.innerHTML = "";
+
+
+    document.getElementById(
+        "fileCount"
+    ).textContent =
+        files.length;
 
 
     if (files.length === 0) {
 
-        fileGrid.innerHTML = `
-
-            <div class="empty">
-
-                No files uploaded in this category yet.
-
-            </div>
-
-        `;
-
-        updateCounters([]);
+        grid.innerHTML =
+            `<div class="empty">
+                No files uploaded yet.
+            </div>`;
 
         return;
 
@@ -489,47 +248,38 @@ function displayFiles(files) {
         const card =
             document.createElement("div");
 
+        card.className =
+            "file-card";
 
-        card.className = "file-card";
 
-
-        const isImage =
+        const image =
             file.type &&
             file.type.startsWith("image/");
 
 
-        const preview =
-            isImage
-
-            ?
-
-            `
-            <div class="file-preview">
-
-                <img
-                    src="${file.url}"
-                    alt="${escapeHTML(file.name)}"
-                >
-
-            </div>
-            `
-
-            :
-
-            `
-            <div class="file-preview">
-
-                <div class="file-icon">
-                    📄
-                </div>
-
-            </div>
-            `;
-
-
         card.innerHTML = `
 
-            ${preview}
+            <div class="file-preview">
+
+                ${
+                    image
+
+                    ?
+
+                    `<img
+                        src="${file.url}"
+                        alt="Portfolio file"
+                    >`
+
+                    :
+
+                    `<div class="file-icon">
+                        📄
+                    </div>`
+                }
+
+            </div>
+
 
             <div class="file-info">
 
@@ -541,158 +291,68 @@ function displayFiles(files) {
                     ${formatBytes(file.size)}
                 </p>
 
-                <div class="file-actions">
+                <a
+                    class="file-action"
+                    href="${file.url}"
+                    target="_blank"
+                    rel="noopener">
 
-                    <a
-                        href="${file.url}"
-                        target="_blank"
-                        rel="noopener"
-                    >
-                        View
-                    </a>
+                    View / Download
 
-                    <a
-                        href="${file.url}"
-                        download
-                        target="_blank"
-                        rel="noopener"
-                    >
-                        Download
-                    </a>
-
-                </div>
+                </a>
 
             </div>
-
         `;
 
 
-        fileGrid.appendChild(card);
+        grid.appendChild(card);
 
     });
 
-
-    updateCounters(files);
-
 }
 
 
-/* =========================================================
-   COUNTERS
-========================================================= */
-
-function updateCounters(files) {
-
-    const fileCount =
-        document.getElementById("fileCount");
-
-    const imageCount =
-        document.getElementById("imageCount");
-
-
-    fileCount.textContent =
-        files.length;
-
-
-    const images =
-        files.filter(
-            file =>
-                file.type &&
-                file.type.startsWith("image/")
-        );
-
-
-    imageCount.textContent =
-        images.length;
-
-}
-
-
-/* =========================================================
-   FORMAT FILE SIZE
-========================================================= */
+/* =========================
+   HELPERS
+========================= */
 
 function formatBytes(bytes) {
 
-    if (!bytes) return "Unknown size";
+    if (!bytes) return "";
 
+    const units =
+        ["Bytes","KB","MB","GB"];
 
-    const units = [
-        "Bytes",
-        "KB",
-        "MB",
-        "GB"
-    ];
-
-
-    const index =
+    const i =
         Math.floor(
             Math.log(bytes) /
             Math.log(1024)
         );
 
-
     return (
-        parseFloat(
-            (bytes /
-                Math.pow(
-                    1024,
-                    index
-                )
-            ).toFixed(2)
-        ) +
-        " " +
-        units[index]
+        (bytes /
+        Math.pow(1024,i))
+        .toFixed(1)
+        + " "
+        + units[i]
     );
 
 }
 
 
-/* =========================================================
-   SECURITY HELPER
-========================================================= */
-
 function escapeHTML(text) {
 
     return String(text)
-
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-
-        .replace(
-            /</g,
-            "&lt;"
-        )
-
-        .replace(
-            />/g,
-            "&gt;"
-        )
-
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-
-        .replace(
-            /'/g,
-            "&#039;"
-        );
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
 
 }
 
 
-/* =========================================================
-   INITIAL LOAD
-========================================================= */
+/* INITIAL */
 
-window.addEventListener(
-    "DOMContentLoaded",
-    () => {
-
-        loadFiles();
-
-    }
-);
+loadPublicFiles();
+```
