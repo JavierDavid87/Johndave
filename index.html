@@ -1,5 +1,7 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,39 +10,34 @@
 
     <link rel="stylesheet" href="style.css">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+          rel="stylesheet">
 </head>
 
 <body>
 
-<!-- BACKGROUND EFFECT -->
-<div class="background">
-    <span></span>
+<!-- Animated background -->
+<div class="bg-animation">
     <span></span>
     <span></span>
     <span></span>
     <span></span>
 </div>
 
-<!-- NAVIGATION -->
+<!-- NAVBAR -->
 <header class="navbar">
 
     <div class="logo">
         <span>&lt;</span> JDJ <span>/&gt;</span>
     </div>
 
-    <nav id="navMenu">
+    <nav id="nav">
         <a href="#home">Home</a>
         <a href="#about">About Me</a>
         <a href="#portfolio">Portfolio</a>
     </nav>
 
-    <button class="menu-btn" id="menuBtn">
-        ☰
-    </button>
+    <button class="menu-button" onclick="toggleMenu()">☰</button>
 
 </header>
 
@@ -50,49 +47,42 @@
 
     <div class="hero-content">
 
-        <div class="profile-container">
+        <div class="profile-wrapper">
+
+            <div class="profile-ring"></div>
 
             <img
                 id="profileImage"
-                src="https://via.placeholder.com/250"
+                src="https://via.placeholder.com/300"
                 alt="Profile Picture"
-            >
-
-            <label for="profileUpload" class="profile-edit">
-                ✎
-            </label>
-
-            <input
-                type="file"
-                id="profileUpload"
-                accept="image/*"
-                hidden
             >
 
         </div>
 
         <div class="hero-text">
 
-            <p class="small-title">
-                WELCOME TO MY
+            <p class="welcome">
+                WELCOME TO MY PORTFOLIO
             </p>
 
             <h1>
-                Academic
-                <span>Portfolio</span>
+                John David
+                <span>Javier</span>
             </h1>
 
             <h2>
-                <span id="typingText"></span>
+                <span id="typing"></span>
             </h2>
 
-            <p>
-                A collection of my academic activities, quizzes,
-                examinations, laboratory activities, and projects.
+            <p class="description">
+                Welcome to my academic portfolio. This website
+                showcases my quizzes, examinations, activities,
+                laboratory outputs, and projects throughout my
+                Computer Science journey.
             </p>
 
-            <a href="#portfolio" class="main-btn">
-                Explore My Portfolio
+            <a href="#portfolio" class="primary-button">
+                Explore Portfolio
                 <span>→</span>
             </a>
 
@@ -106,38 +96,40 @@
 <!-- ABOUT -->
 <section id="about" class="section">
 
-    <div class="section-title">
+    <div class="section-heading">
 
-        <p>GET TO KNOW ME</p>
+        <p>ABOUT ME</p>
 
         <h2>
-            About <span>Me</span>
+            Get To Know <span>Me</span>
         </h2>
 
     </div>
 
-    <div class="about-card">
 
-        <div class="about-icon">
+    <div class="about-container">
+
+        <div class="about-symbol">
             &lt;/&gt;
         </div>
 
         <div>
 
             <h3>
-                Hello, I'm John David Javier
+                Computer Science Student
             </h3>
 
             <p>
-                I am a Computer Science student who wants to improve
-                my knowledge and skills in programming, web development,
-                software development, and information technology.
+                I am a Computer Science student who wants to
+                improve my knowledge and skills in programming,
+                web development, software development, and
+                information technology.
             </p>
 
             <p>
-                This portfolio contains my academic progress,
-                activities, examinations, laboratory outputs,
-                and projects throughout my studies.
+                This portfolio serves as a collection of my
+                academic achievements, activities, examinations,
+                laboratory outputs, and projects.
             </p>
 
             <div class="skills">
@@ -158,104 +150,90 @@
 
 
 <!-- PORTFOLIO -->
-<section id="portfolio" class="section portfolio-section">
+<section id="portfolio" class="section portfolio">
 
-    <div class="section-title">
+    <div class="section-heading">
 
-        <p>MY ACADEMIC WORK</p>
+        <p>ACADEMIC WORK</p>
 
         <h2>
-            Academic <span>Portfolio</span>
+            My <span>Portfolio</span>
         </h2>
 
     </div>
 
 
-    <!-- CATEGORY BUTTONS -->
+    <!-- CATEGORIES -->
 
-    <div class="category-buttons">
+    <div class="categories">
 
-        <button class="category-btn active" data-category="quiz">
+        <button class="category active"
+                data-category="quiz">
             Quiz
         </button>
 
-        <button class="category-btn" data-category="longquiz">
+        <button class="category"
+                data-category="longquiz">
             Long Quiz
         </button>
 
-        <button class="category-btn" data-category="midterms">
+        <button class="category"
+                data-category="midterms">
             Midterms
         </button>
 
-        <button class="category-btn" data-category="finals">
+        <button class="category"
+                data-category="finals">
             Finals
         </button>
 
-        <button class="category-btn" data-category="activities">
+        <button class="category"
+                data-category="activities">
             Activities
         </button>
 
-        <button class="category-btn" data-category="projects">
+        <button class="category"
+                data-category="projects">
             Projects
         </button>
 
     </div>
 
 
-    <!-- UPLOAD AREA -->
+    <!-- CATEGORY HEADER -->
 
-    <div class="upload-card">
+    <div class="portfolio-header">
 
         <div>
 
-            <h3 id="currentCategory">
+            <p class="label">
+                CURRENT CATEGORY
+            </p>
+
+            <h3 id="categoryTitle">
                 Quiz
             </h3>
 
-            <p>
-                Upload multiple images or files for this category.
-            </p>
-
         </div>
 
-        <label class="upload-btn">
+        <div class="file-stat">
 
-            + Upload Files
-
-            <input
-                type="file"
-                id="fileUpload"
-                multiple
-                hidden
-            >
-
-        </label>
-
-    </div>
-
-
-    <!-- COUNTER -->
-
-    <div class="counter">
-
-        <div>
             <strong id="fileCount">0</strong>
-            <span>Files Uploaded</span>
-        </div>
 
-        <div>
-            <strong id="imageCount">0</strong>
-            <span>Images</span>
+            <span>Files</span>
+
         </div>
 
     </div>
 
 
-    <!-- FILE GRID -->
+    <!-- FILES -->
 
     <div id="fileGrid" class="file-grid">
 
-        <!-- Files appear here -->
+        <div class="loading">
+            Loading portfolio...
+        </div>
 
     </div>
 
@@ -271,98 +249,69 @@
     </div>
 
     <p>
-        Academic Portfolio • Built with HTML, CSS & JavaScript
+        Academic Portfolio
     </p>
 
     <p class="copyright">
-        © 2026 John David Javier. All Rights Reserved.
+        © 2026 John David Javier
     </p>
 
 </footer>
 
 
-<!-- FIREBASE -->
+<!-- Firebase -->
 
 <script type="module">
 
-    /*
-    ============================================================
-    FIREBASE CONFIGURATION
-    ============================================================
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
 
-    Replace the values below with your Firebase project
-    configuration.
-
-    Create a Firebase project at:
-    https://firebase.google.com/
-
-    Enable:
-    1. Firestore Database
-    2. Storage
-
-    Then copy your Web App configuration here.
-    */
-
-    import { initializeApp }
-    from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-
-    import {
-        getFirestore,
-        collection,
-        addDoc,
-        getDocs,
-        query,
-        orderBy
-    }
-    from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
-
-    import {
-        getStorage,
-        ref,
-        uploadBytes,
-        getDownloadURL
-    }
-    from "https://www.gstatic.com/firebasejs/12.2.1/firebase-storage.js";
+import {
+    getFirestore,
+    collection,
+    getDocs
+}
+from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
 
-    const firebaseConfig = {
+const firebaseConfig = {
 
-        apiKey: "YOUR_API_KEY",
+    apiKey: "YOUR_API_KEY",
 
-        authDomain: "YOUR_PROJECT.firebaseapp.com",
+    authDomain:
+        "YOUR_PROJECT.firebaseapp.com",
 
-        projectId: "YOUR_PROJECT_ID",
+    projectId:
+        "YOUR_PROJECT_ID",
 
-        storageBucket: "YOUR_PROJECT.firebasestorage.app",
+    storageBucket:
+        "YOUR_PROJECT.firebasestorage.app",
 
-        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    messagingSenderId:
+        "YOUR_MESSAGING_SENDER_ID",
 
-        appId: "YOUR_APP_ID"
+    appId:
+        "YOUR_APP_ID"
 
-    };
-
-
-    const app = initializeApp(firebaseConfig);
-
-    const db = getFirestore(app);
-
-    const storage = getStorage(app);
+};
 
 
-    window.firebaseDB = db;
-    window.firebaseStorage = storage;
-    window.firebaseFunctions = {
+const app =
+    initializeApp(firebaseConfig);
 
-        collection,
-        addDoc,
-        getDocs,
-        query,
-        orderBy,
-        ref,
-        uploadBytes,
-        getDownloadURL
 
-    };
+const db =
+    getFirestore(app);
+
+
+window.portfolioDB = db;
+
+window.firestoreFunctions = {
+
+    collection,
+    getDocs
+
+};
 
 </script>
 
@@ -371,3 +320,4 @@
 
 </body>
 </html>
+```
