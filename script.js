@@ -1,4 +1,4 @@
-```javascript
+
 const categories = document.querySelectorAll(".category");
 
 let currentCategory = "quiz";
